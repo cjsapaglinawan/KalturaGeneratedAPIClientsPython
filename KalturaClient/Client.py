@@ -46,7 +46,7 @@ from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 import six
 
-from lxml import etree
+import xml.etree.ElementTree as ET
 from KalturaClient.Base import (
     IKalturaClientPlugin,
     IKalturaLogger,
@@ -143,7 +143,7 @@ class KalturaClient(object):
         self.callsQueue = []
         self.requestHeaders = {}
         self.clientConfiguration = {
-            'clientTag': 'python-23-01-30',
+            'clientTag': 'python-23-01-03',
             'apiVersion': API_VERSION,
         }
         self.requestConfiguration = {}
@@ -357,9 +357,8 @@ class KalturaClient(object):
     def parsePostResult(self, postResult):
         self.log("result (xml): %s" % postResult)
         try:
-            parser = etree.XMLParser(encoding='ISO-8859-1', ns_clean=True, recover=True)
-            resultXml = etree.fromstring(postResult, parser=parser)
-        except etree.ParseError as e:
+            resultXml = ET.fromstring(postResult)
+        except Exception as e:
             raise KalturaClientException(
                 e, KalturaClientException.ERROR_INVALID_XML)
 
